@@ -2,16 +2,16 @@
     <string name="app_name">Moody-an</string>
     <string name="nama">Nama</string>
     <string name="desk_perasaan">Deskripsi perasaan</string>
-    <string name="tanggal">dd/MM/yyyy</string>
     <string name="cek">Cek</string>
-    <string name="persenan">Berapa persen untuk hari ini?(%)</string>
+    <string name="persenan">Persentase perasaan(%)</string>
     <string name="date">Date</string>
+    <string name="senang">Senang</string>
     <string-array name="list_perasaan">
-        <item>&#x1F601; Senang</item>
-        <item>&#x1F62D; Sedih</item>
-        <item>&#x1F621; Marah</item>
-        <item>&#x1F642; Netral</item>
-        <item>&#x1F605; Terhibur</item>
+        <item>Senang</item>
+        <item>Sedih</item>
+        <item>Marah</item>
+        <item>Netral</item>
+        <item>Terhibur</item>
     </string-array>
 
 </resources>
