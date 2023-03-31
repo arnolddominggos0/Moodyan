@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.DatePicker
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.d3if3024.moodyan.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
@@ -22,9 +23,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set OnClickListener pada TextInputEditText untuk meminta input dari pengguna
         binding.etTanggal.setOnClickListener {
-
             // Mendapatkan tanggal saat ini
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -36,16 +35,26 @@ class MainActivity : AppCompatActivity() {
                 this@MainActivity,
                 { view, selectedYear, selectedMonth, selectedDay ->
 
-                    // Mengubah tanggal yang dipilih menjadi string dengan format tertentu
-                    val selectedDate = String.format(
-                        "%02d-%02d-%d",
-                        selectedDay,
-                        selectedMonth + 1,
-                        selectedYear
-                    )
+                    // Membuat objek Date dari tanggal yang dipilih
+                    val selectedDate = Calendar.getInstance().apply {
+                        set(selectedYear, selectedMonth, selectedDay)
+                    }.time
 
-                    // Set tanggal yang dipilih ke TextInputEditText
-                    binding.etTanggal.setText(selectedDate)
+                    // Mengecek apakah tanggal yang dipilih melebihi tanggal saat ini
+                    if (selectedDate.after(Calendar.getInstance().time)) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Tanggal tidak valid!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        // Mengubah tanggal yang dipilih menjadi string dengan format tertentu
+                        val dateString = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                            .format(selectedDate)
+
+                        // Set tanggal yang dipilih ke TextInputEditText
+                        binding.etTanggal.setText(dateString)
+                    }
                 },
                 year,
                 month,
@@ -56,6 +65,7 @@ class MainActivity : AppCompatActivity() {
             datePickerDialog.show()
         }
 
+
         binding.listPerasaansp.selected { }
 
         binding.buttonCek.setOnClickListener {
@@ -65,7 +75,26 @@ class MainActivity : AppCompatActivity() {
 
             val nama = binding.namaInp.text.toString()
             val deskPerasaan = binding.perasaanInp.text.toString()
-            val persentase = binding.percentageInp.text.toString().toInt()
+            val persentase = binding.percentageInp.text.toString().toIntOrNull()
+            val tanggal = binding.etTanggal.text.toString()
+
+            //pengecekan inputan kosong atau tidak valid
+            if (tanggal.isBlank()) {
+                Toast.makeText(this, "Tanggal tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            } else if (nama.isBlank()) {
+                Toast.makeText(this, "Nama tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            } else if (deskPerasaan.isBlank()) {
+                Toast.makeText(this, "Deskripsi perasaan tidak boleh kosong", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (persentase == null || persentase < 1 || persentase > 100) {
+                Toast.makeText(this, "Persentase harus di antara 1-100", Toast.LENGTH_SHORT).show()
+            } else {
+                // Jika input valid, tampilkan ke TextView
+                val resultText =
+                    "Nama: $nama\nDeskripsi Perasaan: $deskPerasaan\nPersentase: $persentase%\nTanggal: $tanggal"
+                binding.tvResult.text = resultText
+            }
+
 
             // Menampilkan inputan ke dalam TextView
             val resultText =
@@ -75,7 +104,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-        fun Spinner.selected(action: (position: Int) -> Unit) {
+    fun Spinner.selected(action: (position: Int) -> Unit) {
         this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(
@@ -102,17 +131,11 @@ class MainActivity : AppCompatActivity() {
                     "Terhibur" -> {
                         emot = R.drawable.ic_entertained_emoticon
                     }
+                    else -> {
+                        emot = R.drawable.ic_default_emoticon
+                    }
                 }
             }
-        }
-    }
-
-    private fun formatDate(date: Date): String {
-        val today = Date()
-        return if (date.after(today)) {
-            "Tanggal tidak valid"
-        } else {
-            SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(date)
         }
     }
 }
