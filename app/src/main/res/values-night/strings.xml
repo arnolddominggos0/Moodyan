@@ -5,9 +5,7 @@
     <string name="cek">Cek</string>
     <string name="persenan">Persentase perasaan(%)</string>
     <string name="date">Date</string>
-    <string name="senang">Senang</string>
     <string-array name="list_perasaan">
-        <item>Default</item>
         <item>Senang</item>
         <item>Sedih</item>
         <item>Marah</item>
